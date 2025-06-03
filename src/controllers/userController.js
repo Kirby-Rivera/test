@@ -9,9 +9,9 @@ export async function getUsers() {
     }
 
     const data = await response.json();
-    return data.users; // Return the fetched JSON data
+    return data.users;
   } catch (error) {
     console.error("Error fetching users:", error);
-    throw error; // Ensure errors propagate for handling elsewhere
+    throw error;
   }
 }

@@ -14,9 +14,12 @@ function NavBtn(props) {
 }
 
 function UserTable() {
-  const { users } = useCrud();
+  const { users, loading, error } = useCrud();
   const { paginatedUsers, handlePageChange, currentPage, totalPages } =
     usePageNav({ users });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error loading data</p>;
 
   return (
     <>
