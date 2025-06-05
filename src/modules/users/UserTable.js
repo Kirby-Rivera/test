@@ -1,7 +1,9 @@
 import { useCrud } from "modules/users/hooks/useCrud";
 import { usePageNav } from "modules/users/hooks/usePageNav";
 import { Table } from "reactstrap";
+import { useState } from "react";
 import styles from "./Users.module.scss";
+import Success from "components/Success";
 
 function NavBtn(props) {
   const { onClick, title } = props;
@@ -14,7 +16,8 @@ function NavBtn(props) {
 }
 
 function UserTable() {
-  const { users, loading, error } = useCrud();
+  const [message, setMessage] = useState(null);
+  const { users, loading, error, deleteCurrentUser } = useCrud();
   const { paginatedUsers, handlePageChange, currentPage, totalPages } =
     usePageNav({ users });
 
@@ -23,6 +26,7 @@ function UserTable() {
 
   return (
     <>
+      <Success message={message} />
       <Table className="mt-3">
         <thead>
           <tr className={styles["table-header-row"]}>
@@ -39,7 +43,7 @@ function UserTable() {
           {paginatedUsers?.map((user, index) => {
             return (
               <tr key={index} className={styles["table-body-row"]}>
-                <td scope="row">{user.id}</td>
+                <td>{user.id}</td>
                 <td>
                   <img
                     className={styles["user-profile"]}
@@ -50,13 +54,21 @@ function UserTable() {
                 <td>{user.email}</td>
                 <td>{user.firstName}</td>
                 <td>{user.lastName}</td>
-                <td></td>
+                <td>
+                  <button
+                    onClick={() => {
+                      deleteCurrentUser(user.id);
+                      setMessage("User Deleted Successfully");
+                    }}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             );
           })}
         </tbody>
       </Table>
-
       <div className={styles["table-nav"]}>
         <NavBtn
           onClick={() => handlePageChange(currentPage - 1)}
