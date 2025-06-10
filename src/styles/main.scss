@@ -1,2 +1,6 @@
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
+@import url("https://fonts.cdnfonts.com/css/br-shape");
 
+* {
+  font-family: "BR Shape", sans-serif;
+}

@@ -1,6 +1,7 @@
 import { useCrud } from "modules/users/hooks/useCrud";
 import { usePageNav } from "modules/users/hooks/usePageNav";
 import { Table } from "reactstrap";
+import { VECTOR_ICONS } from "assets/vector-icons";
 import styles from "./Users.module.scss";
 
 function NavBtn(props) {
@@ -36,7 +37,7 @@ function UserTable() {
           {paginatedUsers?.map((user, index) => {
             return (
               <tr key={index} className={styles["table-body-row"]}>
-                <td scope="row">{user.id}</td>
+                <td>{user.id}</td>
                 <td>
                   <img
                     className={styles["user-profile"]}
@@ -47,7 +48,10 @@ function UserTable() {
                 <td>{user.email}</td>
                 <td>{user.firstName}</td>
                 <td>{user.lastName}</td>
-                <td></td>
+                <td>
+                  {VECTOR_ICONS.deleteIcon}
+                  {VECTOR_ICONS.editIcon}
+                </td>
               </tr>
             );
           })}
@@ -57,14 +61,14 @@ function UserTable() {
       <div className={styles["table-nav"]}>
         <NavBtn
           onClick={() => handlePageChange(currentPage - 1)}
-          title={"back"}
+          title={VECTOR_ICONS.chevronLeft}
         />
         <span className={styles["table-nav-current"]}>
           {currentPage} of {totalPages}
         </span>
         <NavBtn
           onClick={() => handlePageChange(currentPage + 1)}
-          title={"next"}
+          title={VECTOR_ICONS.chevronRight}
         />
       </div>
     </>
