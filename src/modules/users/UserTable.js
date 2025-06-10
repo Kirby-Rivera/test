@@ -3,7 +3,6 @@ import { usePageNav } from "modules/users/hooks/usePageNav";
 import { Table } from "reactstrap";
 import { useState } from "react";
 import styles from "./Users.module.scss";
-import Success from "components/Success";
 
 function NavBtn(props) {
   const { onClick, title } = props;
@@ -16,7 +15,7 @@ function NavBtn(props) {
 }
 
 function UserTable() {
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState("");
   const { users, loading, error, deleteCurrentUser } = useCrud();
   const { paginatedUsers, handlePageChange, currentPage, totalPages } =
     usePageNav({ users });
@@ -24,9 +23,15 @@ function UserTable() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading data</p>;
 
+  if (message) {
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+  }
+
   return (
     <>
-      <Success message={message} />
+      <div>{message}</div>
       <Table className="mt-3">
         <thead>
           <tr className={styles["table-header-row"]}>

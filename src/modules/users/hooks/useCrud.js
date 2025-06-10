@@ -1,4 +1,4 @@
-import { getUsers, deleteUser } from "controllers/userController";
+import { getUsers, deleteUser, createUser } from "controllers/userController";
 import { useState, useEffect } from "react";
 
 export function useCrud() {
@@ -23,14 +23,30 @@ export function useCrud() {
 
   async function deleteCurrentUser(userId) {
     try {
-      const delete_user = await deleteUser(userId);
+      await deleteUser(userId);
 
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-
     } catch (err) {
       console.error("Error deleting user:", err);
     }
   }
 
-  return { users, loading, error, deleteCurrentUser };
+  async function addNewUser(firstName, lastName, email) {
+    const userData = {
+      id: 12 + 1,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+    };
+
+    try {
+      const addedUser = await createUser(userData);
+
+      setUsers((prevUsers) => [...prevUsers, addedUser]);
+    } catch (err) {
+      console.error("Error adding user:", err);
+    }
+  }
+
+  return { users, loading, error, deleteCurrentUser, addNewUser };
 }

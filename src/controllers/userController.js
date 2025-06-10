@@ -2,7 +2,7 @@ const apiUrl = "https://dummyjson.com/users";
 
 export async function getUsers() {
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(`${apiUrl}?limit=12`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
