@@ -1,7 +1,11 @@
 import { useCrud } from "modules/users/hooks/useCrud";
 import { usePageNav } from "modules/users/hooks/usePageNav";
 import { Table } from "reactstrap";
+
 import { VECTOR_ICONS } from "assets/vector-icons";
+
+import { useState } from "react";
+
 import styles from "./Users.module.scss";
 
 function NavBtn(props) {
@@ -15,12 +19,23 @@ function NavBtn(props) {
 }
 
 function UserTable() {
-  const { users } = useCrud();
+  const [message, setMessage] = useState("");
+  const { users, loading, error, deleteCurrentUser } = useCrud();
   const { paginatedUsers, handlePageChange, currentPage, totalPages } =
     usePageNav({ users });
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error loading data</p>;
+
+  if (message) {
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+  }
+
   return (
     <>
+      <div>{message}</div>
       <Table className="mt-3">
         <thead>
           <tr className={styles["table-header-row"]}>
@@ -49,15 +64,20 @@ function UserTable() {
                 <td>{user.firstName}</td>
                 <td>{user.lastName}</td>
                 <td>
-                  {VECTOR_ICONS.deleteIcon}
-                  {VECTOR_ICONS.editIcon}
+                  <button
+                    onClick={() => {
+                      deleteCurrentUser(user.id);
+                      setMessage("User Deleted Successfully");
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             );
           })}
         </tbody>
       </Table>
-
       <div className={styles["table-nav"]}>
         <NavBtn
           onClick={() => handlePageChange(currentPage - 1)}
