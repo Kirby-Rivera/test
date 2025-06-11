@@ -1,7 +1,5 @@
 import axios from "api/axios";
 
-const apiUrl = "https://dummyjson.com/users";
-
 export async function getUsers() {
   try {
     const response = await axios.get("/users?limit=12");

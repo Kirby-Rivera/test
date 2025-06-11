@@ -25,6 +25,7 @@ function UserTable() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [currentId, setCurrentId] = useState(null)
   const { users, loading, error, deleteCurrentUser, editUser, addNewUser } =
     useCrud();
   const { paginatedUsers, handlePageChange, currentPage, totalPages } =
@@ -55,7 +56,7 @@ function UserTable() {
         </Button>
       </div>
 
-      {userModal && (
+      {currentModal === "add-user" ? (
         <Modal>
           <UserModalContent
             current={currentModal}
@@ -71,9 +72,26 @@ function UserTable() {
             }}
           />
         </Modal>
+      ) : (
+        currentModal === "edit-user" && (
+          <UserModalContent
+            current={currentModal}
+            fName={firstName}
+            lName={lastName}
+            mail={email}
+            onFChange={(e) => setFirstName(e.target.value)}
+            onLChange={(e) => setLastName(e.target.value)}
+            onEChange={(e) => setEmail(e.target.value)}
+            add={() => {
+              editUser(currentId, firstName, lastName, email);
+              setMessage("User Edited Successfully");
+            }}
+          />
+        )
       )}
 
       <div>{message}</div>
+
       <Table className="mt-3">
         <thead>
           <tr className={styles["table-header-row"]}>
@@ -112,7 +130,11 @@ function UserTable() {
                   </button>
                   <button
                     onClick={() => {
-                      editUser(user.id, "Test", "Testing", "test@email.com");
+                      handleModal(userModal, "edit-user");
+                      setFirstName(user.firstName);
+                      setLastName(user.lastName);
+                      setEmail(user.email);
+                      setCurrentId(user.id)
                     }}
                   >
                     {VECTOR_ICONS.editIcon}

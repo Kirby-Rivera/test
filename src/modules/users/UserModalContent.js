@@ -1,9 +1,18 @@
 function UserModalContent(props) {
-  const { current, fName, lName, mail, id, onFChange, onLChange, onEChange, add, edit } = props
+  const {
+    current,
+    fName,
+    lName,
+    mail,
+    onFChange,
+    onLChange,
+    onEChange,
+    add,
+  } = props;
 
-  return current === "add-user" ? (
+  return current === "add-user" || current === "edit-user" ? (
     <div>
-      <input 
+      <input
         type="text"
         placeholder="First Name"
         value={fName}
@@ -21,13 +30,7 @@ function UserModalContent(props) {
         value={mail}
         onChange={onEChange}
       />
-      <button onClick={add}>
-        Add User
-      </button>
-    </div>
-  ) : current === "edit-user" ? (
-    <div>
-
+      <button onClick={add}>{current === "add-user" ? "Add user" : "Edit user"}</button>
     </div>
   ) : current === "delete-user" ? (
     <div>This is delete User</div>
