@@ -1,37 +1,34 @@
-import { useState } from "react";
-import { useCrud } from "./hooks/useCrud";
-
 function UserModalContent(props) {
-  const { current } = props;
-  const { addNewUser } = useCrud();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const { current, fName, lName, mail, id, onFChange, onLChange, onEChange, add, edit } = props
 
   return current === "add-user" ? (
     <div>
-      <input
+      <input 
         type="text"
         placeholder="First Name"
-        value={firstName}
-        onChange={(e) => setFirstName(e.target.value)}
+        value={fName}
+        onChange={onFChange}
       />
       <input
         type="text"
         placeholder="Last Name"
-        value={lastName}
-        onChange={(e) => setLastName(e.target.value)}
+        value={lName}
+        onChange={onLChange}
       />
       <input
         type="text"
         placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={mail}
+        onChange={onEChange}
       />
-      <button onClick={() => addNewUser(firstName, lastName, email)}>Add User</button>
+      <button onClick={add}>
+        Add User
+      </button>
     </div>
   ) : current === "edit-user" ? (
-    <div>This is edit user</div>
+    <div>
+
+    </div>
   ) : current === "delete-user" ? (
     <div>This is delete User</div>
   ) : (

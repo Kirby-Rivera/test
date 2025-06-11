@@ -1,8 +1,13 @@
-import { getUsers, deleteUser, createUser } from "controllers/userController";
+import {
+  getUsers,
+  deleteUser,
+  createUser,
+  updateUser,
+} from "controllers/userController";
 import { useState, useEffect } from "react";
 
 export function useCrud() {
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -32,21 +37,44 @@ export function useCrud() {
   }
 
   async function addNewUser(firstName, lastName, email) {
+    const arrayIds = users.map((user) => user.id);
+
     const userData = {
-      id: 12 + 1,
+      id: Math.max(...arrayIds) + 1,
       firstName: firstName,
       lastName: lastName,
       email: email,
+      image: "https://dummyjson.com/icon/michaelw/128",
     };
 
     try {
-      const addedUser = await createUser(userData);
+      await createUser(userData);
 
-      setUsers((prevUsers) => [...prevUsers, addedUser]);
+      setUsers((prevUsers) => [...prevUsers, userData]);
     } catch (err) {
       console.error("Error adding user:", err);
     }
   }
 
-  return { users, loading, error, deleteCurrentUser, addNewUser };
+  async function editUser(id, firstName, lastName, email) {
+    const newUserData = {
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      image: "https://dummyjson.com/icon/michaelw/128",
+    };
+
+    try {
+      await updateUser(id, newUserData);
+
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => (user.id === id ? newUserData : user))
+      );
+    } catch (err) {
+      console.error("Error adding user:", err);
+    }
+  }
+
+  return { users, loading, error, deleteCurrentUser, addNewUser, editUser };
 }

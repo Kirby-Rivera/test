@@ -17,6 +17,10 @@
     transition: 0.2s ease-in-out;
     border-bottom: 1px solid black;
 
+    button {
+      all: unset;
+    }
+
     &:hover {
       background: rgba($color: #000000, $alpha: 0.2);
     }
