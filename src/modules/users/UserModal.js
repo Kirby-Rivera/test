@@ -1,14 +1,20 @@
-import useUserData from "./hooks/useUserData";
+import { useUserData } from "./UserDataProvider";
 import UserModalContent from "./UserModalContent";
 
 function UserModal(props) {
-  const { add, edit, current, id, fName, lName, eMail } = props;
-  const { firstName, setFirstName, lastName, setLastName, email, setEmail } =
-    useUserData();
+  const { add, edit, current, del } = props;
+  const {
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    email,
+    setEmail,
+    currentId,
+    clearInputs
+  } = useUserData();
 
-  current == "edit-user" ? () => setFirstName(fName) : null;
-
-  return current === "add-user" ? (
+  return (
     <UserModalContent
       current={current}
       fName={firstName}
@@ -17,23 +23,25 @@ function UserModal(props) {
       onFChange={(e) => setFirstName(e.target.value)}
       onLChange={(e) => setLastName(e.target.value)}
       onEChange={(e) => setEmail(e.target.value)}
-      add={() => add(firstName, lastName, email)}
+      onClick={
+        current === "add-user"
+          ? () => {
+              add(firstName, lastName, email);
+              clearInputs("User added successfully.");
+            }
+          : current === "edit-user"
+          ? () => {
+              edit(currentId, firstName, lastName, email);
+              clearInputs("User edited successfully.");
+            }
+          : current === "delete-user"
+          ? () => {
+              del(currentId);
+              clearInputs("User deleted successfully.");
+            }
+          : null
+      }
     />
-  ) : (
-    current === "edit-user" && (
-      <UserModalContent
-        current={current}
-        fName={firstName}
-        lName={lastName}
-        mail={email}
-        onFChange={(e) => setFirstName(e.target.value)}
-        onLChange={(e) => setLastName(e.target.value)}
-        onEChange={(e) => setEmail(e.target.value)}
-        add={() => {
-          edit(id, firstName, lastName, email);
-        }}
-      />
-    )
   );
 }
 

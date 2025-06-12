@@ -5,9 +5,8 @@ import { VECTOR_ICONS } from "assets/vector-icons";
 import { useState } from "react";
 import { Button } from "reactstrap";
 import UserModal from "./UserModal";
-import useUserData from "./hooks/useUserData";
+import { useUserData } from "./UserDataProvider";
 import Modal from "components/Modal";
-import UserModalContent from "./UserModalContent";
 import styles from "./Users.module.scss";
 
 function NavBtn(props) {
@@ -21,18 +20,16 @@ function NavBtn(props) {
 }
 
 function UserTable() {
-  const [message, setMessage] = useState("");
-  const [isModalOpen, setisModalOpen] = useState(false);
-  const [currentModal, setCurrentModal] = useState("");
   const {
-    firstName,
     setFirstName,
-    lastName,
     setLastName,
-    email,
     setEmail,
-    currentId,
     setCurrentId,
+    currentModal,
+    isModalOpen,
+    handleModal,
+    message,
+    setMessage,
   } = useUserData();
   const { users, loading, error, deleteCurrentUser, editUser, addNewUser } =
     useCrud();
@@ -46,11 +43,6 @@ function UserTable() {
     setTimeout(() => {
       setMessage("");
     }, 3000);
-  }
-
-  function handleModal(prev, curr) {
-    setisModalOpen((prev = !prev));
-    setCurrentModal(curr);
   }
 
   return (
@@ -69,17 +61,14 @@ function UserTable() {
           <Modal title={"Add user:"}>
             <UserModal current={currentModal} add={addNewUser} />
           </Modal>
+        ) : currentModal === "edit-user" ? (
+          <Modal title={"Edit User:"}>
+            <UserModal current={currentModal} edit={editUser} />
+          </Modal>
         ) : (
-          currentModal === "edit-user" && (
-            <Modal title={"Edit User:"}>
-              <UserModal
-                current={currentModal}
-                edit={editUser}
-                id={currentId}
-                fName={firstName}
-                lName={lastName}
-                eMail={email}
-              />
+          currentModal === "delete-user" && (
+            <Modal title={"Delete User:"}>
+              <UserModal current={currentModal} del={deleteCurrentUser} />
             </Modal>
           )
         ))}
@@ -116,8 +105,11 @@ function UserTable() {
                 <td>
                   <button
                     onClick={() => {
-                      deleteCurrentUser(user.id);
-                      setMessage("User Deleted Successfully");
+                      handleModal(isModalOpen, "delete-user");
+                      setFirstName(user.firstName);
+                      setLastName(user.lastName);
+                      setEmail(user.email);
+                      setCurrentId(user.id);
                     }}
                   >
                     {VECTOR_ICONS.deleteIcon}

@@ -1,7 +1,12 @@
 import UserTable from "./UserTable";
+import { UserDataProvider } from "modules/users/UserDataProvider";
 
 function Users() {
-  return <UserTable />;
+  return (
+    <UserDataProvider>
+      <UserTable />
+    </UserDataProvider>
+  );
 }
 
 export default Users;
