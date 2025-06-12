@@ -4,6 +4,8 @@ import { Table } from "reactstrap";
 import { VECTOR_ICONS } from "assets/vector-icons";
 import { useState } from "react";
 import { Button } from "reactstrap";
+import UserModal from "./UserModal";
+import useUserData from "./hooks/useUserData";
 import Modal from "components/Modal";
 import UserModalContent from "./UserModalContent";
 import styles from "./Users.module.scss";
@@ -20,12 +22,18 @@ function NavBtn(props) {
 
 function UserTable() {
   const [message, setMessage] = useState("");
-  const [userModal, setUserModal] = useState(false);
+  const [isModalOpen, setisModalOpen] = useState(false);
   const [currentModal, setCurrentModal] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [currentId, setCurrentId] = useState(null)
+  const {
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    email,
+    setEmail,
+    currentId,
+    setCurrentId,
+  } = useUserData();
   const { users, loading, error, deleteCurrentUser, editUser, addNewUser } =
     useCrud();
   const { paginatedUsers, handlePageChange, currentPage, totalPages } =
@@ -41,7 +49,7 @@ function UserTable() {
   }
 
   function handleModal(prev, curr) {
-    setUserModal((prev = !prev));
+    setisModalOpen((prev = !prev));
     setCurrentModal(curr);
   }
 
@@ -49,46 +57,32 @@ function UserTable() {
     <>
       <div className="mt-3 text-right">
         <Button
-          onClick={() => handleModal(userModal, "add-user")}
+          onClick={() => handleModal(isModalOpen, "add-user")}
           color="primary"
         >
           + Add User
         </Button>
       </div>
 
-      {currentModal === "add-user" ? (
-        <Modal>
-          <UserModalContent
-            current={currentModal}
-            fName={firstName}
-            lName={lastName}
-            mail={email}
-            onFChange={(e) => setFirstName(e.target.value)}
-            onLChange={(e) => setLastName(e.target.value)}
-            onEChange={(e) => setEmail(e.target.value)}
-            add={() => {
-              addNewUser(firstName, lastName, email);
-              setMessage("User Created Successfully");
-            }}
-          />
-        </Modal>
-      ) : (
-        currentModal === "edit-user" && (
-          <UserModalContent
-            current={currentModal}
-            fName={firstName}
-            lName={lastName}
-            mail={email}
-            onFChange={(e) => setFirstName(e.target.value)}
-            onLChange={(e) => setLastName(e.target.value)}
-            onEChange={(e) => setEmail(e.target.value)}
-            add={() => {
-              editUser(currentId, firstName, lastName, email);
-              setMessage("User Edited Successfully");
-            }}
-          />
-        )
-      )}
+      {isModalOpen &&
+        (currentModal === "add-user" ? (
+          <Modal title={"Add user:"}>
+            <UserModal current={currentModal} add={addNewUser} />
+          </Modal>
+        ) : (
+          currentModal === "edit-user" && (
+            <Modal title={"Edit User:"}>
+              <UserModal
+                current={currentModal}
+                edit={editUser}
+                id={currentId}
+                fName={firstName}
+                lName={lastName}
+                eMail={email}
+              />
+            </Modal>
+          )
+        ))}
 
       <div>{message}</div>
 
@@ -130,11 +124,11 @@ function UserTable() {
                   </button>
                   <button
                     onClick={() => {
-                      handleModal(userModal, "edit-user");
+                      handleModal(isModalOpen, "edit-user");
                       setFirstName(user.firstName);
                       setLastName(user.lastName);
                       setEmail(user.email);
-                      setCurrentId(user.id)
+                      setCurrentId(user.id);
                     }}
                   >
                     {VECTOR_ICONS.editIcon}

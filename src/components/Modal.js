@@ -1,7 +1,7 @@
-function Modal({ children }) {
+function Modal({ children, title }) {
   return (
     <div>
-      <h4>This is modal.</h4>
+      <h4>{title}</h4>
       {children}
     </div>
   );
